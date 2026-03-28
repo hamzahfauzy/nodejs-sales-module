@@ -1,28 +1,22 @@
 CREATE TABLE sls_products (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
-    organization_id BIGINT UNSIGNED NULL,
     item_id BIGINT UNSIGNED NOT NULL,
 
     price DECIMAL(18,2) DEFAULT 0,
     unit VARCHAR(50) NULL,
-    status VARCHAR(50) DEFAULT 'active',
     thumbnail_url VARCHAR(255) NULL,
+    record_type VARCHAR(50) NULL,
 
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL,
-
-    CONSTRAINT fk_sls_products_organization_id
-        FOREIGN KEY (organization_id) REFERENCES organizations(id)
-        ON DELETE CASCADE,
     
     CONSTRAINT fk_sls_products_item_id
         FOREIGN KEY (item_id) REFERENCES inv_items(id)
         ON DELETE CASCADE,
 
-    INDEX idx_sls_products_organization (item_id),
-    INDEX idx_sls_products_item (item_id),
+    INDEX idx_sls_products_item (item_id)
 );
 
 CREATE TABLE sls_subscription_plans (
@@ -57,7 +51,7 @@ CREATE TABLE sls_subscriptions (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     organization_id BIGINT UNSIGNED NOT NULL,
-    ref_name BIGINT UNSIGNED NOT NULL,
+    ref_name VARCHAR(255) DEFAULT NULL,
     ref_id BIGINT UNSIGNED NOT NULL,
 
     plan_id BIGINT UNSIGNED NOT NULL,
@@ -99,5 +93,24 @@ CREATE TABLE sls_subscription_items (
         ON DELETE CASCADE,
 
     CONSTRAINT fk_sls_subscription_items_product_id
-        FOREIGN KEY (product_id) REFERENCES products(id)
+        FOREIGN KEY (product_id) REFERENCES sls_products(id)
+);
+
+CREATE TABLE sls_customers (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    organization_id BIGINT UNSIGNED NOT NULL,
+    
+    ref_id BIGINT UNSIGNED NOT NULL,
+    ref_name VARCHAR(255) NOT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+
+    CONSTRAINT fk_sls_customers_organization_id
+        FOREIGN KEY (organization_id) REFERENCES organizations(id)
+        ON DELETE CASCADE,
+
+    INDEX idx_sls_customers_org (organization_id)
 );

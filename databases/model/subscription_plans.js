@@ -1,93 +1,108 @@
 import { DataTypes } from "#database/database.sequelize.js";
 
 const responseField = {
-    id: {},
-    name: { searchable: true },
-    price: {},
-    billing_interval: {},
-    status: {}
-}
+  id: {},
+  name: { searchable: true },
+  organization_id: {},
+  organization_name: {
+    relation: true,
+    searchable: true,
+    value: "organization.name",
+  },
+  price: {},
+  description: {},
+  billing_interval: {},
+  billing_interval_count: {},
+  trial_days: {},
+  status: {},
+  created_at: {},
+  updated_at: {},
+};
 
 export default {
+  name: "sls_subscription_plans",
 
-    name: 'subscription_plans',
+  schema: {
+    fields: {
+      id: {
+        type: DataTypes.BIGINT.UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+      },
 
-    schema: {
+      organization_id: {
+        type: DataTypes.BIGINT.UNSIGNED,
+      },
 
-        fields: {
+      name: {
+        type: DataTypes.STRING(255),
+      },
 
-            id: {
-                type: DataTypes.BIGINT.UNSIGNED,
-                primaryKey: true,
-                autoIncrement: true
-            },
+      description: {
+        type: DataTypes.TEXT,
+      },
 
-            organization_id: {
-                type: DataTypes.BIGINT.UNSIGNED
-            },
+      price: {
+        type: DataTypes.DECIMAL(18, 2),
+      },
 
-            name: {
-                type: DataTypes.STRING(255)
-            },
+      billing_interval: {
+        type: DataTypes.STRING(50),
+      },
 
-            description: {
-                type: DataTypes.TEXT
-            },
+      billing_interval_count: {
+        type: DataTypes.INTEGER,
+      },
 
-            price: {
-                type: DataTypes.DECIMAL(18,2)
-            },
+      trial_days: {
+        type: DataTypes.INTEGER,
+      },
 
-            billing_interval: {
-                type: DataTypes.STRING(50)
-            },
+      status: {
+        type: DataTypes.ENUM("active", "inactive"),
+      },
 
-            billing_interval_count: {
-                type: DataTypes.INTEGER
-            },
+      created_at: {
+        type: DataTypes.DATE,
+      },
 
-            trial_days: {
-                type: DataTypes.INTEGER
-            },
+      updated_at: {
+        type: DataTypes.DATE,
+      },
 
-            status: {
-                type: DataTypes.ENUM('active','inactive')
-            },
-
-            created_at: {
-                type: DataTypes.DATE
-            },
-
-            updated_at: {
-                type: DataTypes.DATE
-            },
-
-            deleted_at: {
-                type: DataTypes.DATE
-            }
-
-        },
-
-        options: {
-            tableName: 'subscription_plans',
-            timestamps: true,
-            paranoid: true,
-            createdAt: 'created_at',
-            updatedAt: 'updated_at',
-            deletedAt: 'deleted_at'
-        }
+      deleted_at: {
+        type: DataTypes.DATE,
+      },
     },
 
-    permissions: [
-        'subscription_plans.list',
-        'subscription_plans.create',
-        'subscription_plans.update',
-        'subscription_plans.delete'
+    relations: [
+      {
+        modelName: "organizations",
+        type: "belongsTo",
+        as: "organization",
+        foreignKey: "organization_id",
+      },
     ],
 
-    response: {
-        list: responseField,
-        single: responseField
-    }
+    options: {
+      tableName: "sls_subscription_plans",
+      timestamps: true,
+      paranoid: true,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+      deletedAt: "deleted_at",
+    },
+  },
 
-}
+  permissions: [
+    "sls_subscription_plans.list",
+    "sls_subscription_plans.create",
+    "sls_subscription_plans.update",
+    "sls_subscription_plans.delete",
+  ],
+
+  response: {
+    list: responseField,
+    single: responseField,
+  },
+};
