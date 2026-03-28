@@ -27,12 +27,12 @@ export default {
         permission: "sls_customers.list",
         activeState: ["/sales/customers"],
       },
-      products: {
-        label: "Products",
-        route: "/sales/products",
-        permission: "sls_products.list",
-        activeState: ["/sales/products"],
-      },
+      // products: {
+      //   label: "Products",
+      //   route: "/sales/products",
+      //   permission: "sls_products.list",
+      //   activeState: ["/sales/products"],
+      // },
       merchandise: {
         label: "Merchandise",
         route: "/sales/merchandise",

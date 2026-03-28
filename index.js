@@ -40,5 +40,13 @@ export default {
     context.register.table("sls_subscriptions", subscriptions);
     context.register.table("sls_customers", customers);
     context.register.migration("sales", "app/sales/databases/migrations");
+
+    context.register.route('sales', (router) => {
+      router.post('/create-subscription-invoice', (req, res) => {
+        res.json({
+          message: 'oke'
+        })
+      })
+    })
   },
 };
