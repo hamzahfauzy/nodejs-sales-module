@@ -1,23 +1,52 @@
 import { DataTypes } from "#database/database.sequelize.js";
+import DatabaseService from "#database/database.service.js";
+import { getTable } from "#database/database.registry.js";
 
+const service = new DatabaseService
 const responseField = {
   id: {},
-  item_id: {},
-  item_name: {
+  item_id: {
+    searchable: false,
+  },
+  name: {
     relation: true,
     searchable: true,
     value: "item.name",
   },
-  item_name_record_type: {
+  code: {
     relation: true,
     searchable: true,
+    value: "item.code",
+  },
+  sku: {
+    relation: true,
+    searchable: true,
+    value: "item.sku",
+  },
+  item_name_record_type: {
+    relation: true,
+    searchable: false,
     value: (row) => `${row.item?.name} (${row.record_type})`,
   },
-  price: {},
-  unit: {},
-  thumbnail_url: {},
-  record_type: {},
-  created_at: {},
+  price: {
+    searchable: true,
+  },
+  price_format: {
+    searchable: false,
+    value: row => parseInt(row.price).toLocaleString('id-ID')
+  },
+  unit: {
+    searchable: true,
+  },
+  thumbnail_url: {
+    searchable: false,
+  },
+  record_type: {
+    searchable: false,
+  },
+  created_at: {
+    searchable: false,
+  },
 };
 
 export default {
@@ -95,4 +124,47 @@ export default {
     list: responseField,
     single: responseField,
   },
+
+  events: {
+    beforeCreate: async context => {
+      const payload = {...context.payload}
+      const itemTable = getTable('inv_items')
+      const item = await service.create(itemTable, {
+        name: payload.name,
+        sku: payload.sku,
+        code: payload.code,
+        unit: payload.unit
+      })
+
+      delete payload.name
+      delete payload.sku
+      delete payload.code
+      payload.item_id = item.id
+
+      context.payload = payload
+
+    },
+    beforeUpdate: async context => {
+      if(context.payload.thumbnail_url == '')
+      {
+        delete context.payload.thumbnail_url
+      }
+
+      const payload = {...context.payload}
+      const itemTable = getTable('inv_items')
+      await service.update(itemTable, context.oldData.item_id, {
+        name: payload.name,
+        sku: payload.sku,
+        code: payload.code,
+        unit: payload.unit
+      })
+
+      delete payload.name
+      delete payload.sku
+      delete payload.code
+      payload.item_id = context.oldData.item_id
+
+      context.payload = payload
+    }
+  }
 };

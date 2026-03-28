@@ -45,6 +45,12 @@ export default {
         permission: "sls_products.list",
         activeState: ["/sales/services"],
       },
+      orders: {
+        label: "Orders",
+        route: "/sales/orders",
+        permission: "trx_invoices.list",
+        activeState: ["/sales/orders"],
+      },
       subscriptionPlans: {
         label: "Subscription Plans",
         route: "/sales/subscription-plans",
@@ -57,18 +63,13 @@ export default {
         permission: "sls_subscriptions.list",
         activeState: ["/sales/subscriptions"],
       },
-      orders: {
-        label: "Orders",
-        route: "/sales/orders",
-        permission: "trx_invoices.list",
-        activeState: ["/sales/orders"],
-      },
       subscriptionBills: {
         label: "Subscription Bills",
         route: "/sales/subscription-bills",
         permission: "trx_invoices.list",
         activeState: ["/sales/subscription-bills"],
       },
+      
     },
   },
 };

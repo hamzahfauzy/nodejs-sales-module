@@ -17,29 +17,21 @@ export default {
         modalClass: "modal-lg",
 
         fields: [
-          {
-            name: "item_id",
-            label: "Item",
-            type: "select2",
-            dropdownParent: "#create-modal",
-            ajax: {
-              useBearer: true,
-              term: "search",
-              response: { id: "id", text: "name" },
-              url: appUrl + "/table/inv_items",
-            },
-          },
+          { name: "code", label: "Code", type: "text", className: "col-md-6" },
+          { name: "sku", label: "SKU", type: "text", className: "col-md-6" },
+          { name: "name", label: "Name", type: "text", className: "col-md-6" },
+          { name: "unit", label: "Unit", type: "text", className: "col-md-6" },
           {
             name: "price",
             label: "Price",
             type: "text",
             className: "col-md-6",
           },
-          { name: "unit", label: "Unit", type: "text", className: "col-md-6" },
           {
             name: "thumbnail_url",
-            label: "Thumbnail URL",
-            type: "text",
+            label: "Thumbnail",
+            type: "document",
+            srcValue: 'file_url',
             className: "col-md-6",
           },
           {
@@ -60,8 +52,20 @@ export default {
           title: "Product Detail",
           fields: [
             {
-              name: "item_name",
-              label: "Item",
+              name: "code",
+              label: "Code",
+              type: "text",
+              className: "col-md-6",
+            },
+            {
+              name: "name",
+              label: "Name",
+              type: "text",
+              className: "col-md-6",
+            },
+            {
+              name: "sku",
+              label: "SKU",
               type: "text",
               className: "col-md-6",
             },
@@ -85,8 +89,9 @@ export default {
             },
             {
               name: "thumbnail_url",
-              label: "Thumbnail URL",
-              type: "text",
+              label: "Thumbnail",
+              linkLabel: 'See Thumbnail',
+              type: "link",
               className: "col-md-6",
             },
             {
@@ -106,30 +111,16 @@ export default {
           modalClass: "modal-lg",
 
           fields: [
-            {
-              name: "item_id",
-              label: "Item",
-              type: "select2",
-              dropdownParent: "#edit-modal",
-              ajax: {
-                useBearer: true,
-                term: "search",
-                response: { id: "id", text: "name" },
-                initList: {
-                  url: "/table/inv_items",
-                  key: "item_id",
-                  response: { id: "id", text: "name" },
-                },
-                url: appUrl + "/table/inv_items",
-                urlParams: [{ key: "id", value: "id" }],
-              },
-            },
+            { name: "code", label: "Code", type: "text", className: "col-md-6" },
+            { name: "sku", label: "SKU", type: "text", className: "col-md-6" },
+            { name: "name", label: "Name", type: "text", className: "col-md-6" },
             {
               name: "price",
               label: "Price",
               type: "text",
               className: "col-md-6",
             },
+            { name: "unit", label: "Unit", type: "text", className: "col-md-6" },
             {
               name: "record_type",
               label: "Record Type",
@@ -137,15 +128,10 @@ export default {
               className: "col-md-6",
             },
             {
-              name: "unit",
-              label: "Unit",
-              type: "text",
-              className: "col-md-6",
-            },
-            {
               name: "thumbnail_url",
-              label: "Thumbnail URL",
-              type: "text",
+              label: "Thumbnail",
+              type: "document",
+              srcValue: 'file_url',
               className: "col-md-6",
             },
           ],
@@ -161,8 +147,10 @@ export default {
       ],
 
       columns: [
-        { key: "item_name", label: "Item", sortable: true, searchable: true },
-        { key: "price", label: "Price", sortable: true, searchable: true },
+        { key: "code", label: "Code", sortable: true, searchable: true },
+        { key: "sku", label: "SKU", sortable: true, searchable: true },
+        { key: "name", label: "Name", sortable: true, searchable: true },
+        { key: "price_format", label: "Price", sortable: true, searchable: true },
         {
           key: "record_type",
           label: "Record Type",
@@ -170,7 +158,7 @@ export default {
           searchable: true,
         },
         { key: "unit", label: "Unit", sortable: true, searchable: true },
-        { key: "thumbnail_url", label: "Thumbnail URL", sortable: true },
+        // { key: "thumbnail_url", label: "Thumbnail URL", sortable: true },
         {
           key: "created_at",
           label: "Created At",
