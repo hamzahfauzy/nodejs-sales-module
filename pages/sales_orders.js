@@ -15,46 +15,56 @@ export default {
         title: "Create Order",
         modalClass: "modal-xl",
         fields: [
-          {
-            name: "organization_id",
-            label: "Organization",
-            type: "select2",
-            dropdownParent: "#create-modal",
-            ajax: {
-              useBearer: true,
-              term: "search",
-              response: { id: "id", text: "name" },
-              url: appUrl + "/table/organizations",
-            },
-          },
-          { name: "code", label: "Code", type: "text", className: "col-md-6" },
-          {
-            name: "due_date",
-            label: "Due Date",
-            type: "datePicker",
-            className: "col-md-6",
+          { 
+              name: "organization_id", label: "Organization", type: "select2",
+              dropdownParent: '#create-modal',
+              className: 'col-md-6',
+              ajax: {
+                  useBearer: true,
+                  term: 'search',
+                  response: {id: 'id', text: 'name'},
+                  url: appUrl + '/table/organizations',
+              }
           },
           {
-            name: "status",
-            label: "Status",
-            type: "select",
-            className: "col-md-6",
-            defaultValue: "pending",
-            options: [
+              name: "customer_id",
+              label: "Customer",
+              type: "select2",
+              className: 'col-md-6',
+              dropdownParent: "#create-modal",
+              ajax: {
+                  useBearer: true,
+                  term: "search",
+                  response: { id: "id", text: "reference.name" },
+                  url: appUrl + "/table/sls_customers",
+              },
+          },
+          { name: "code", label: "Code", type: "text", className: 'col-md-6'},
+          { name: "due_date", label: "Due Date", type: "datePicker", className: 'col-md-6'},
+          { name: "discount_type", label: "Discount Type", type: "select", className: 'col-md-6', defaultValue: 'fixed', options: [
+              { label: "Fixed", value: "fixed" },
+              { label: "Percent", value: "percent" },
+          ]},
+          { name: "discount_price", label: "Discount", type: "text", className: 'col-md-6'},
+          { name: "discount_alias", type: "hidden", formula: 'discount_price + "" + (discount_type == "percent" ? "%" : "")'},
+          { name: "discount_value", type: "hidden", formula: '(discount_type == "fixed" ? discount_price : sum(items.final_price)*discount_price/100)'},
+
+          { name: "tax_type", label: "Tax Type", type: "select", className: 'col-md-6', defaultValue: 'percent', options: [
+              { label: "Fixed", value: "fixed" },
+              { label: "Percent", value: "percent" },
+          ]},
+          { name: "tax_price", label: "Tax", type: "text", className: 'col-md-6'},
+          { name: "tax_alias", type: "hidden", formula: 'tax_price + "" + (tax_type == "percent" ? "%" : "")'},
+          { name: "tax_value", type: "hidden", formula: '(tax_type == "fixed" ? tax_price : total_price*tax_price/100)'},
+          { name: "total_price", label: "Total Price", type: "text", className: 'col-md-6', props: {readonly: true}, formula: 'sum(items.final_price)-discount_value'},
+          { name: "final_price", label: "Final Price", type: "text", className: 'col-md-6', props: {readonly: true}, formula: 'total_price+tax_value'},
+          { name: "status", label: "Status", type: "select", className: 'col-md-6', defaultValue: 'pending', options: [
               { label: "Pending", value: "pending" },
               { label: "Success", value: "success" },
               { label: "Overdue", value: "overdue" },
-            ],
-          },
-          {
-            name: "record_type",
-            label: "Record Type",
-            type: "hidden",
-            className: "col-md-6",
-            defaultValue: "ORDER",
-            readonly: true,
-          },
-          { name: "description", label: "Description", type: "textArea" },
+          ]},
+          { name: "record_type", label: "Record Type", type: "hidden", defaultValue: 'ORDER'},
+          { name: "description", label: "Description", type: "textArea"},
           {
             name: "items",
             label: "Items",
@@ -126,19 +136,19 @@ export default {
               },
             },
             {
+              name: "discount_value",
+              label: "Discount Price",
+              type: "currency",
+              className: "col-md-6",
+            },
+            {
               name: "total_price",
               label: "Total Price",
               type: "currency",
               className: "col-md-6",
             },
             {
-              name: "discount_price",
-              label: "Discount Price",
-              type: "currency",
-              className: "col-md-6",
-            },
-            {
-              name: "tax_price",
+              name: "tax_value",
               label: "Tax Price",
               type: "currency",
               className: "col-md-6",
@@ -159,12 +169,6 @@ export default {
               name: "remaining_amount",
               label: "Remaining Amount",
               type: "currency",
-              className: "col-md-6",
-            },
-            {
-              name: "record_type",
-              label: "Record Type",
-              type: "text",
               className: "col-md-6",
             },
             {
@@ -253,6 +257,7 @@ export default {
               label: "Organization",
               type: "select2",
               dropdownParent: "#edit-modal",
+              className: 'col-md-6',
               ajax: {
                 useBearer: true,
                 term: "search",
@@ -266,19 +271,26 @@ export default {
                 urlParams: [{ key: "id", value: "id" }],
               },
             },
-            { name: "code", label: "Code", type: "text" },
-            { name: "due_date", label: "Due Date", type: "datePicker" },
             {
-              name: "status",
-              label: "Status",
-              type: "select",
-              className: "col-md-6",
-              defaultValue: "active",
-              options: [
-                { label: "Active", value: "active" },
-                { label: "Inactive", value: "inactive" },
-              ],
+                name: "customer_id",
+                label: "Customer",
+                type: "select2",
+                className: 'col-md-6',
+                dropdownParent: "#edit-modal",
+                ajax: {
+                    useBearer: true,
+                    term: "search",
+                    response: { id: "id", text: "reference.name" },
+                    url: appUrl + "/table/sls_customers",
+                },
             },
+            { name: "code", label: "Code", type: "text", className: 'col-md-6', },
+            { name: "due_date", label: "Due Date", type: "datePicker", className: 'col-md-6', },
+            { name: "status", label: "Status", type: "select", className: 'col-md-6', defaultValue: 'pending', options: [
+              { label: "Pending", value: "pending" },
+              { label: "Success", value: "success" },
+              { label: "Overdue", value: "overdue" },
+            ]},
             {
               name: "record_type",
               label: "Record Type",
@@ -302,6 +314,7 @@ export default {
 
       columns: [
         { key: "code", label: "Code", sortable: true, searchable: true },
+        { key: "reference.name", label: "Customer" },
         {
           key: "due_date",
           label: "Due Date",
@@ -356,6 +369,14 @@ export default {
           type: "date",
         },
       ],
+
+      filters: [
+          { key: "status", type: "options", label: "Status", placeholder: 'All Status', options: [
+              {label: 'Pending', value: 'pending'},
+              {label: 'Success', value: 'success'},
+              {label: 'Overdue', value: 'overdue'},
+          ] },
+      ]
     },
   },
 };

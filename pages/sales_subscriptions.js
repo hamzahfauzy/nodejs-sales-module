@@ -28,9 +28,23 @@ export default {
             },
           },
           {
+              name: "customer_id",
+              label: "Customer",
+              type: "select2",
+              className: 'col-md-6',
+              dropdownParent: "#create-modal",
+              ajax: {
+                  useBearer: true,
+                  term: "search",
+                  response: { id: "id", text: "reference.name" },
+                  url: appUrl + "/table/sls_customers",
+              },
+          },
+          {
             name: "plan_id",
             label: "Subscription Plan",
             type: "select2",
+            className: 'col-md-6',
             dropdownParent: "#create-modal",
             ajax: {
               useBearer: true,
@@ -40,16 +54,9 @@ export default {
             },
           },
           {
-            name: "ref_name",
-            label: "Ref Name",
+            name: "code",
+            label: "Code",
             type: "text",
-            className: "col-md-6",
-          },
-          {
-            name: "ref_id",
-            label: "Ref ID",
-            type: "text",
-            className: "col-md-6",
           },
           {
             name: "start_date",
@@ -70,10 +77,21 @@ export default {
             className: "col-md-6",
           },
           {
+            name: "next_reminder_date",
+            label: "Next Reminder Date",
+            type: "datePicker",
+            className: "col-md-6 mb-3",
+          },
+          {
             name: "auto_renew",
             label: "Auto Renew",
-            type: "switch",
+            type: "select",
             className: "col-md-6",
+            defaultValue: "1",
+            options: [
+              { label: "Yes", value: "1" },
+              { label: "No", value: "0" },
+            ],
           },
           {
             name: "status",
@@ -87,18 +105,6 @@ export default {
               { label: "Cancelled", value: "cancelled" },
               { label: "Expired", value: "expired" },
             ],
-          },
-          {
-            name: "metadata",
-            label: "Metadata",
-            type: "textarea",
-            className: "col-md-6",
-          },
-          {
-            name: "next_reminder_date",
-            label: "Next Reminder Date",
-            type: "datePicker",
-            className: "col-md-6 mb-3",
           },
           {
             name: "items",
@@ -127,7 +133,7 @@ export default {
           type: "view",
           icon: "eye",
           permission: "sls_subscriptions.single",
-          title: "Order Detail",
+          title: "Subscription Detail",
           modalClass: "modal-lg",
           fields: [
             {
@@ -137,20 +143,20 @@ export default {
               className: "col-md-6",
             },
             {
-              name: "plan_name",
+              name: "plan.name",
               label: "Subscription Plan",
               type: "text",
               className: "col-md-6",
             },
             {
-              name: "ref_name",
-              label: "Ref Name",
+              name: "reference.name",
+              label: "Customer",
               type: "text",
               className: "col-md-6",
             },
             {
-              name: "ref_id",
-              label: "Ref ID",
+              name: "plan.price_format",
+              label: "Subscription Price",
               type: "text",
               className: "col-md-6",
             },
@@ -169,6 +175,12 @@ export default {
             {
               name: "next_billing_date",
               label: "Next Billing Date",
+              type: "datePicker",
+              className: "col-md-6",
+            },
+            {
+              name: "next_reminder_date",
+              label: "Next Reminder Date",
               type: "datePicker",
               className: "col-md-6",
             },
@@ -200,27 +212,15 @@ export default {
               },
             },
             {
-              name: "metadata",
-              label: "Metadata",
-              type: "textarea",
-              className: "col-md-6",
-            },
-            {
-              name: "next_reminder_date",
-              label: "Next Reminder Date",
-              type: "datePicker",
-              className: "col-md-6",
-            },
-            {
               name: "items",
               label: "Items",
               type: "tableItems",
               columns: [
                 {
                   columnLabel: "Product",
-                  name: "product_id",
+                  name: "product.item.name",
                   type: "text",
-                  className: "text-end",
+                  className: "text-start",
                 },
                 {
                   columnLabel: "Qty",
@@ -238,7 +238,7 @@ export default {
           icon: "edit-2",
           permission: "sls_subscriptions.update",
           title: "Edit Sales Subscription",
-          show_if: { field: "status", operator: "equals", value: "pending" },
+          // show_if: { field: "status", operator: "equals", value: "pending" },
           modalClass: "modal-md",
           fields: [
             {
@@ -260,14 +260,35 @@ export default {
               },
             },
             {
-              name: "plan_id",
-              label: "Subscription Plan",
+              name: "customer_id",
+              fieldValue: 'customer.id',
+              label: "Customer",
               type: "select2",
+              className: 'col-md-6',
               dropdownParent: "#edit-modal",
               ajax: {
                 useBearer: true,
                 term: "search",
-                response: { id: "id", text: "label" },
+                response: { id: "id", text: "reference.name" },
+                initList: {
+                  url: "/app/sales/get-customer-by-subs-id",
+                  key: "id",
+                  response: { id: "id", text: "reference.name" },
+                },
+                url: appUrl + "/table/sls_customers",
+                urlParams: [{ key: "id", value: "id" }],
+              },
+            },
+            {
+              name: "plan_id",
+              label: "Subscription Plan",
+              type: "select2",
+              className: 'col-md-6',
+              dropdownParent: "#edit-modal",
+              ajax: {
+                useBearer: true,
+                term: "search",
+                response: { id: "id", text: "name" },
                 initList: {
                   url: "/table/sls_subscription_plans",
                   key: "plan_id",
@@ -278,16 +299,9 @@ export default {
               },
             },
             {
-              name: "ref_name",
-              label: "Ref Name",
+              name: "code",
+              label: "Code",
               type: "text",
-              className: "col-md-6",
-            },
-            {
-              name: "ref_id",
-              label: "Ref ID",
-              type: "text",
-              className: "col-md-6",
             },
             {
               name: "start_date",
@@ -304,6 +318,12 @@ export default {
             {
               name: "next_billing_date",
               label: "Next Billing Date",
+              type: "datePicker",
+              className: "col-md-6",
+            },
+            {
+              name: "next_reminder_date",
+              label: "Next Reminder Date",
               type: "datePicker",
               className: "col-md-6",
             },
@@ -326,18 +346,7 @@ export default {
                 { label: "Expired", value: "expired" },
               ],
             },
-            {
-              name: "metadata",
-              label: "Metadata",
-              type: "textarea",
-              className: "col-md-6",
-            },
-            {
-              name: "next_reminder_date",
-              label: "Next Reminder Date",
-              type: "datePicker",
-              className: "col-md-6",
-            },
+            
           ],
         },
         {
@@ -358,8 +367,24 @@ export default {
           searchable: true,
         },
         {
-          key: "plan_name",
+          key: "code",
+          label: "Code",
+          searchable: true,
+        },
+        {
+          key: "reference.name",
+          label: "Customer",
+          searchable: true,
+        },
+        {
+          key: "plan.name",
           label: "Subscription Plan",
+          sortable: true,
+          searchable: true,
+        },
+        {
+          key: "plan.price_format",
+          label: "Subscription Price",
           sortable: true,
           searchable: true,
         },
@@ -378,6 +403,12 @@ export default {
         {
           key: "next_billing_date",
           label: "Next Billing Date",
+          sortable: true,
+          searchable: true,
+        },
+        {
+          key: "next_reminder_date",
+          label: "Next Reminder Date",
           sortable: true,
           searchable: true,
         },
@@ -407,12 +438,6 @@ export default {
               expired: "Expired",
             },
           },
-        },
-        {
-          key: "next_reminder_date",
-          label: "Next Reminder Date",
-          sortable: true,
-          searchable: true,
         },
         {
           key: "created_at",

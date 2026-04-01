@@ -6,11 +6,15 @@ const responseField = {
   product_id: {},
   qty: {},
   price: {},
+  total_price: {},
+  product: {
+    relation: true,
+    as: "product"
+  }
 };
 
 export default {
   name: "sls_subscription_items",
-
   schema: {
     fields: {
       id: {
@@ -30,11 +34,26 @@ export default {
       qty: {
         type: DataTypes.DECIMAL(12, 2),
       },
+      price: {
+        type: DataTypes.DECIMAL(12, 2),
+      },
+      total_price: {
+        type: DataTypes.DECIMAL(12, 2),
+      },
 
       created_at: {
         type: DataTypes.DATE,
       },
     },
+
+    relations: [
+      {
+        modelName: "sls_products",
+        type: "belongsTo",
+        as: "product",
+        foreignKey: "product_id",
+      },
+    ],
 
     options: {
       tableName: "sls_subscription_items",

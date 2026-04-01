@@ -364,17 +364,16 @@ export default {
               name: "organization_name",
               label: "Organization",
               type: "text",
-              className: "col-md-6",
             },
             {
-              name: "ref_id",
-              label: "Ref ID",
+              name: "reference.name",
+              label: "Name",
               type: "text",
               className: "col-md-6",
             },
             {
               name: "ref_name",
-              label: "Ref Name",
+              label: "Type",
               type: "text",
               className: "col-md-6",
             },
@@ -431,14 +430,14 @@ export default {
 
       columns: [
         {
-          key: "ref_id",
-          label: "ID",
+          key: "reference.name",
+          label: "Name",
           sortable: true,
           searchable: true,
         },
         {
           key: "ref_name",
-          label: "Ref Name",
+          label: "Type",
           sortable: true,
           searchable: true,
         },

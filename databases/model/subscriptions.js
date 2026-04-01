@@ -1,5 +1,5 @@
 import { DataTypes } from "#database/database.sequelize.js";
-import { getModel } from "#database/database.registry.js";
+import { getModel, getTable } from "#database/database.registry.js";
 
 const responseField = {
   id: {},
@@ -15,6 +15,15 @@ const responseField = {
     searchable: true,
     value: "plan.name",
   },
+  plan: {
+    relation: true,
+    as: 'plan',
+    fields: () => {
+      const planTable = getTable('sls_subscription_plans')
+      return planTable.response.single
+    }
+  },
+  code: {},
   ref_id: {},
   ref_name: {},
   start_date: {},
@@ -26,11 +35,55 @@ const responseField = {
   metadata: {},
   created_at: {},
   updated_at: {},
+  reference: {
+    morph: true,
+    typeField: 'ref_name',
+    idField: 'ref_id',
+  },
+  subscription_list_name: {
+    value: row => `${row.code} - ${row.reference.name}`
+  },
+  items: {
+    relation: true,
+    as: 'items',
+    fields: {
+      id: {},
+      qty: {},
+      price: {},
+      total_price: {},
+      product: {
+        relation: true,
+        as: 'product',
+        fields: {
+          price: {},
+          price_format: {
+            value: row => parseInt(row.price).toLocaleString('id-ID')
+          },
+          unit: {},
+          thumbnail: {},
+          item: {
+            relation: true,
+            as: 'item'
+          }
+        }
+      }
+    }
+  }
 };
+
+const singleResponseField = {
+  ...responseField,
+  customer: {
+    relation: true,
+    pivoting: true,
+    tableName: 'sls_customers',
+    typeField: 'ref_name',
+    idField: 'ref_id',
+  },
+}
 
 export default {
   name: "sls_subscriptions",
-
   schema: {
     fields: {
       id: {
@@ -52,6 +105,10 @@ export default {
       },
 
       ref_name: {
+        type: DataTypes.STRING(255),
+      },
+      
+      code: {
         type: DataTypes.STRING(255),
       },
 
@@ -138,13 +195,24 @@ export default {
 
   response: {
     list: responseField,
-    single: responseField,
+    single: singleResponseField,
   },
 
   events: {
+    beforeCreate: async (context) => {
+      if(context.payload.customer_id)
+      {
+        const customerModel = getModel('sls_customers')
+        const customer = await customerModel.findByPk(context.payload.customer_id)
+        context.payload.ref_name = customer.ref_name
+        context.payload.ref_id = customer.ref_id
+
+        delete context.payload.customer_id
+      }
+    },
     afterCreate: async (context) => {
       const payload = { ...context.payload };
-      const items = payload.items;
+      const items = payload.items || [];
       items.forEach((item) => {
         const invoiceItem = getModel("sls_subscription_items");
         invoiceItem.create({
@@ -153,6 +221,17 @@ export default {
           qty: item.qty,
         });
       });
+    },
+    beforeUpdate: async (context) => {
+      if(context.payload.customer_id)
+      {
+        const customerModel = getModel('sls_customers')
+        const customer = await customerModel.findByPk(context.payload.customer_id)
+        context.payload.ref_name = customer.ref_name
+        context.payload.ref_id = customer.ref_id
+
+        delete context.payload.customer_id
+      }
     },
   },
 };

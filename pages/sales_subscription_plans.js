@@ -49,8 +49,15 @@ export default {
           {
             name: "billing_interval",
             label: "Billing Interval",
-            type: "text",
+            type: "select",
             className: "col-md-6",
+            defaultValue: 'month',
+            options: [
+              { label: "Day", value: "day" },
+              { label: "Week", value: "week" },
+              { label: "Month", value: "month" },
+              { label: "Year", value: "year" },
+            ],
           },
           {
             name: "billing_interval_count",
@@ -99,7 +106,7 @@ export default {
               className: "col-md-6",
             },
             {
-              name: "price",
+              name: "price_format",
               label: "Price",
               type: "text",
               className: "col-md-6",
@@ -250,7 +257,7 @@ export default {
           searchable: true,
         },
         { key: "name", label: "Name", sortable: true, searchable: true },
-        { key: "price", label: "Price", sortable: true, searchable: true },
+        { key: "price_format", label: "Price", sortable: true, searchable: true },
         {
           key: "billing_interval",
           label: "Billing Interval",

@@ -10,6 +10,9 @@ const responseField = {
     value: "organization.name",
   },
   price: {},
+  price_format: {
+    value: row => parseInt(row.price).toLocaleString('id-ID')
+  },
   description: {},
   billing_interval: {},
   billing_interval_count: {},

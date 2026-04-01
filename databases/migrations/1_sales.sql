@@ -54,6 +54,8 @@ CREATE TABLE sls_subscriptions (
     ref_name VARCHAR(255) DEFAULT NULL,
     ref_id BIGINT UNSIGNED NOT NULL,
 
+    code VARCHAR(255) DEFAULT NULL,
+
     plan_id BIGINT UNSIGNED NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NULL,
@@ -62,6 +64,9 @@ CREATE TABLE sls_subscriptions (
     auto_renew BOOLEAN DEFAULT TRUE,
     status VARCHAR(50) DEFAULT 'active',
     metadata JSON NULL,
+
+    price DECIMAL(18,2) DEFAULT 0,
+    total_price DECIMAL(18,2) DEFAULT 0,
 
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -85,6 +90,8 @@ CREATE TABLE sls_subscription_items (
     product_id BIGINT UNSIGNED NOT NULL,
 
     qty DECIMAL(12,2) DEFAULT 1,
+    price DECIMAL(12,2) DEFAULT 0,
+    total_price DECIMAL(12,2) DEFAULT 0,
 
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
 

@@ -24,7 +24,7 @@ export default {
             ajax: {
               useBearer: true,
               term: "search",
-              response: { id: "id", text: "ref_id" },
+              response: { id: "id", text: "subscription_list_name" },
               url: appUrl + "/table/sls_subscriptions",
             },
           },
@@ -300,6 +300,14 @@ export default {
           type: "date",
         },
       ],
+
+      filters: [
+        { key: "status", type: "options", label: "Status", placeholder: 'All Status', options: [
+            {label: 'Pending', value: 'pending'},
+            {label: 'Success', value: 'success'},
+            {label: 'Overdue', value: 'overdue'},
+        ] },
+      ]
     },
   },
 };

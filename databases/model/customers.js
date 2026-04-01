@@ -11,6 +11,11 @@ const responseField = {
   },
   ref_id: {},
   ref_name: {},
+  reference: {
+      morph: true,
+      typeField: 'ref_name',
+      idField: 'ref_id',
+  },
 };
 
 export default {

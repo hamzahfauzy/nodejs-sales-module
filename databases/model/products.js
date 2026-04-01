@@ -23,6 +23,10 @@ const responseField = {
     searchable: true,
     value: "item.sku",
   },
+  item: {
+    relation: true,
+    as: 'item'
+  },
   item_name_record_type: {
     relation: true,
     searchable: false,
@@ -127,7 +131,7 @@ export default {
 
   events: {
     beforeCreate: async context => {
-      const payload = {...context.payload}
+      const payload = context.payload
       const itemTable = getTable('inv_items')
       const item = await service.create(itemTable, {
         name: payload.name,
@@ -141,8 +145,6 @@ export default {
       delete payload.code
       payload.item_id = item.id
 
-      context.payload = payload
-
     },
     beforeUpdate: async context => {
       if(context.payload.thumbnail_url == '')
@@ -150,7 +152,7 @@ export default {
         delete context.payload.thumbnail_url
       }
 
-      const payload = {...context.payload}
+      const payload = context.payload
       const itemTable = getTable('inv_items')
       await service.update(itemTable, context.oldData.item_id, {
         name: payload.name,
@@ -163,8 +165,6 @@ export default {
       delete payload.sku
       delete payload.code
       payload.item_id = context.oldData.item_id
-
-      context.payload = payload
     }
   }
 };
